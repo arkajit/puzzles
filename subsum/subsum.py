@@ -1,11 +1,12 @@
 # Subset Sum Problem
-# Input: A list of integers
+# Input: A list of n integers
 # Output: A non-empty subset of the integers that sums to 0
 # 
 # NP-complete, but a reasonable polynomial-time solution can still be found
-# when input values are polynomial
-# see http://en.wikipedia.org/wiki/Subset_sum_problem for more details on the
-# algorithm used here
+# when input values are polynomial. In particular, assuming values on the order
+# of 1e3 and n <= 50, this will be fairly fast.
+# See http://en.wikipedia.org/wiki/Subset_sum_problem for more details on the
+# algorithm used here.
 
 import sys
 
