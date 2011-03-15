@@ -35,6 +35,7 @@ int main() {
 		fin >> bessie[i] >> jonell[i];
 		meet[i] = 0;
 	}
+	fin.close();
 
 	/* TEST Input
 	for (int i = 1; i <= N; i++) {
@@ -69,6 +70,7 @@ int main() {
 	for (int i = 1; i <=M; i++) {
 		fout << meet[i] << endl;
 	}
+	fout.close();
 
 	return 0;
 }
