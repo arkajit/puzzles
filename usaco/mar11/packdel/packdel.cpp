@@ -6,12 +6,10 @@ LANG: C++
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <queue>
 #include <map>
 #include <vector>
 #include <utility>
 #include <climits>
-#include <algorithm>
 
 #define MAXN 50000
 #define MAXM 50000
@@ -57,8 +55,8 @@ int main() {
 		cout << "Vertex " << i << " has the following neighbors: " << endl;
 		vec = graph[i];
 		for (int j = 0; j < vec.size(); j++) {
-			ip = vec[j];
-			cout << "Vertex " << ip.first << " with weight " << ip.second << endl;
+			edge = vec[j];
+			cout << "Vertex " << edge.first << " with weight " << edge.second << endl;
 		}
 	}
 	*/ 
