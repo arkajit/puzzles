@@ -6,9 +6,8 @@ LANG: C++
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <map>
 #include <vector>
-#include <utility>
+#include <queue>
 #include <climits>
 
 #define MAXN 50000
@@ -23,25 +22,23 @@ int main() {
 	ifstream fin("packdel.in");
 
 	typedef pair<int, int> IntPair;
-	map<int, vector<IntPair> > graph;
-	IntPair edge;
-	vector<IntPair> vec;
+	vector<IntPair> graph[MAXN+1]; // adjacency list representation of graph
+	priority_queue<IntPair> q; // first = estimated dist, second = vertex #
+	IntPair edge, ip;
+	vector<IntPair> nbrs;
 
-	int unvisited[MAXN+1], scores[MAXN+1];
-	// bit-vector of which nodes we haven't visited
 	// scores is the smallest distance we've found to a particular vertex
-
-	int a, b, c, N, M;
-	int nextVertex; // the vertex with the next best score
+	int scores[MAXN+1];
+	int a, b, c, N, M, dist, vertex;
 
 	fin >> N >> M;
 
 	scores[0] = INT_MAX;
 	for (int i = 1; i <= N; i++) {
 		graph[i] = vector<IntPair>();
-		unvisited[i] = 1;
 		scores[i] = (i == START) ? 0 : INT_MAX;
 	}
+	q.push(make_pair(0, START));
 
 	for (int i = 1; i <= M; i++) {
 		fin >> a >> b >> c;
@@ -50,38 +47,33 @@ int main() {
 	}
 	fin.close();
 
-	/* TEST input
-	for (int i = 1; i <= N; i++) {
-		cout << "Vertex " << i << " has the following neighbors: " << endl;
-		vec = graph[i];
-		for (int j = 0; j < vec.size(); j++) {
-			edge = vec[j];
-			cout << "Vertex " << edge.first << " with weight " << edge.second << endl;
-		}
-	}
-	*/ 
+	// priority_queue doesn't support the DecreaseKey operation you would normally
+	// use in a MinHeap implementation of Dijkstra's
+	// but you can avoid this by just readding an element with smaller key and
+	// keeping track of the smallest key so far. Whenever we pop off a stale value
+	// that's no longer the best, we just skip it.
+	while (!q.empty()) {
+		ip = q.top();
+		dist = -ip.first;
+		vertex = ip.second;
+		q.pop();
 
-	// We'll visit exactly N vertices
-	// Vist in order of current nextVertex
-	// Find Min currently takes O(N). Can speed up with a min-heap, but didn't
-	// have time to implement.
-	nextVertex = START;
-	for (int i = 1; i <= N; i++) {
-		unvisited[nextVertex] = 0;
-		vec = graph[nextVertex];
-		for (int j = 0; j < vec.size(); j++) {
-			edge = vec[j];
-			// Relax operation
-			if (scores[nextVertex] + edge.second < scores[edge.first]) {
-				scores[edge.first] = scores[nextVertex] + edge.second;
-			}
+		if (vertex == N) {
+			break;
 		}
 
-		// find the next unvisited vertex with the lowest score
-		nextVertex = 0;
-		for (int i = 1; i <= N; i++) {
-			if (unvisited[i] && scores[i] < scores[nextVertex]) {
-				nextVertex = i;
+		if (scores[vertex] < dist) {
+			continue; // we've updated this entry already, skip it
+		}
+
+		nbrs = graph[vertex];
+		for (int j = 0; j < nbrs.size(); j++) {
+			edge = nbrs[j];
+			b = edge.first; // next vertex
+			c = edge.second; // cost of the edge
+			if (dist + c < scores[b]) { // Relax operation
+				scores[b] = dist + c;
+				q.push(make_pair(-scores[b], b));
 			}
 		}
 	}
@@ -89,4 +81,3 @@ int main() {
 	fout << scores[N] << endl;
 	fout.close();
 }
-
