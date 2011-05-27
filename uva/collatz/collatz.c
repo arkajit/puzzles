@@ -1,39 +1,37 @@
 #include <stdio.h>
-#include <math.h>
 
-#define MAXNUM 1000000
-
-int cyc[MAXNUM+1] = {0};
+int cycle_length(int n) {
+  int i = 1;
+  while (n != 1) {
+    if (n % 2) {
+      n = 3*n+1;
+    } else {
+      n = n/2;
+    }
+    i++;
+  }
+  return i;
+}
 
 int main() {
-  int c, i, j, k, best;
-
-/*
-  for (k = 0; k < log2(MAXNUM); k++) {
-    cyc[(int) pow(2, k)] = k+1;
-  } 
-*/
-
-  cyc[1] = 1; /* initialize base case */
+  int c, i, i0, j, j0, k, best;
 
   while (scanf("%d %d", &i, &j) != EOF) {
+    i0 = i;
+    j0 = j;
+
+    /* swap order */
+    if (i > j) {
+      c = i;
+      i = j;
+      j = c;
+    }
+
     best = cycle_length(j);
     for (k = i; k < j; k++) {
       c = cycle_length(k);
       best = (c > best) ? c : best; 
     }
-    printf("%d %d %d\n", i, j, best);
+    printf("%d %d %d\n", i0, j0, best);
   }
-}
-
-int cycle_length(int n) {
-  if (cyc[n] == 0) {
-    if (n % 2) {
-      cyc[n] = 1 + cycle_length(3*n+1);
-    } else {
-      cyc[n] = 1 + cycle_length(n/2);
-    }
-  }
-
-  return cyc[n];
 }
