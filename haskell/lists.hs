@@ -18,6 +18,8 @@ myLength (_:xs) = 1 + myLength xs
 reverse' [] = []
 reverse' (x:xs) = (reverse' xs) ++ [x]
 
+rev' = foldl (\acc x -> x : acc) []
+
 isPalindrome xs = xs == (reverse' xs)
 
 compress [] = []
@@ -35,3 +37,30 @@ pack (x:xs) = [a] ++ pack b
           | otherwise = (a, b)
 
 encode xs = [(length run, head run) | run <- pack xs]
+
+take' n _
+  | n <= 0 = []
+take' _ [] = []
+take' n (x:xs) = x:(take' (n-1) xs)
+
+zip' _ [] = []
+zip' [] _ = []
+zip' (x:xs) (y:ys) = (x,y):(zip' xs ys)
+
+elem' _ [] = False
+elem' k (x:xs)
+  | x == k = True
+  | otherwise = elem' k xs
+
+qsort :: (Ord a) => [a] -> [a]
+qsort [] = []
+qsort (x:xs) = qsort [y | y <- xs, y <= x]
+             ++ [x]
+             ++ qsort [y | y <-xs, y > x]
+
+quicksort [] = []
+quicksort (x:xs) = quicksort (filter (<=x) xs)
+                 ++ [x]
+                 ++ quicksort (filter (>x) xs)
+
+zipWith' f x y = [(f a b) | (a,b) <- zip' x y]
