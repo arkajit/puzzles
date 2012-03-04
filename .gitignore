@@ -2,3 +2,4 @@
 *.hi
 *.in
 *.out
+*.pyc
