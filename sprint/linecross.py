@@ -29,33 +29,37 @@ class Query:
 
 class LineSet:
   def __init__(self):
-    self.lmap = {}
+    self.lines = []
 
   def AddLine(self, x, y, l):
-    line = Line(x, y, l)
-    self.lmap[line.id] = line
+    self.lines.append(Line(x, y, l))
+
+  # All lines have been added. Prepare for executing queries.
+  def Prepare(self):
+    self.lines_by_pos = sorted(self.lines, key=lambda l: l.pos)
+    self.lpos = map(lambda l: l.pos, self.lines_by_pos)
+
+    self.lines_by_start = sorted(self.lines, key=lambda l: l.start)
+    self.lstart = map(lambda l: l.start, self.lines_by_start)
+
+    self.lines_by_end = sorted(self.lines, key=lambda l: l.end)
+    self.lend = map(lambda l: l.end, self.lines_by_end)
 
   # Return set of line ids.
   def GetLinesBetween(self, y1, y2):
-    lines_by_pos = sorted(self.lmap.itervalues(), key=lambda l: l.pos)
-    lpos = map(lambda l: l.pos, lines_by_pos)
-    a = bisect.bisect_left(lpos, y1)
-    b = bisect.bisect_right(lpos, y2)
-    return set(map(lambda l: l.id, lines_by_pos[a:b]))
+    a = bisect.bisect_left(self.lpos, y1)
+    b = bisect.bisect_right(self.lpos, y2)
+    return set(map(lambda l: l.id, self.lines_by_pos[a:b]))
 
   def GetLinesStartingBefore(self, x1):
-    lines_by_start = sorted(self.lmap.itervalues(), key=lambda l: l.start)
-    lstart = map(lambda l: l.start, lines_by_start)
-    a = bisect.bisect_right(lstart, x1)
-    return set(map(lambda l: l.id, lines_by_start[:a]))
+    a = bisect.bisect_right(self.lstart, x1)
+    return set(map(lambda l: l.id, self.lines_by_start[:a]))
 
   def GetLinesEndingAfter(self, x2):
-    lines_by_end = sorted(self.lmap.itervalues(), key=lambda l: l.end)
-    lend = map(lambda l: l.end, lines_by_end)
-    b = bisect.bisect_left(lend, x2)
-    return set(map(lambda l: l.id, lines_by_end[b:]))
+    b = bisect.bisect_left(self.lend, x2)
+    return set(map(lambda l: l.id, self.lines_by_end[b:]))
 
-  def exec_query(self, q):
+  def ExecuteQuery(self, q):
     a = self.GetLinesBetween(q.start, q.end)
     b = self.GetLinesStartingBefore(q.pos)
     c = self.GetLinesEndingAfter(q.pos)
@@ -73,9 +77,10 @@ for q in range(Q):
   x, y, l = [int(i) for i in raw_input().split()]
   queries.append(Query(x, y, l))
 
+line_set.Prepare()
 results = []
 for q in queries:
-  results.append(line_set.exec_query(q))
+  results.append(line_set.ExecuteQuery(q))
 
 for r in results:
   print r
