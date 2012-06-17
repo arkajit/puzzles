@@ -1,4 +1,5 @@
 import bisect
+import functools
 
 def get_counter(start=1, by=1):
   def counter():
@@ -37,33 +38,47 @@ class LineSet:
   # All lines have been added. Prepare for executing queries.
   def Prepare(self):
     self.lines_by_pos = sorted(self.lines, key=lambda l: l.pos)
+    self.pos_ids = map(lambda l: l.id, self.lines_by_pos)
     self.lpos = map(lambda l: l.pos, self.lines_by_pos)
 
     self.lines_by_start = sorted(self.lines, key=lambda l: l.start)
+    self.start_ids = map(lambda l: l.id, self.lines_by_start)
     self.lstart = map(lambda l: l.start, self.lines_by_start)
 
     self.lines_by_end = sorted(self.lines, key=lambda l: l.end)
+    self.end_ids = map(lambda l: l.id, self.lines_by_end)
     self.lend = map(lambda l: l.end, self.lines_by_end)
 
-  # Return set of line ids.
+  # Following functions return set of line ids.
   def GetLinesBetween(self, y1, y2):
     a = bisect.bisect_left(self.lpos, y1)
     b = bisect.bisect_right(self.lpos, y2)
-    return set(map(lambda l: l.id, self.lines_by_pos[a:b]))
+    return set(self.pos_ids[a:b])
 
   def GetLinesStartingBefore(self, x1):
     a = bisect.bisect_right(self.lstart, x1)
-    return set(map(lambda l: l.id, self.lines_by_start[:a]))
+    return set(self.start_ids[:a])
 
   def GetLinesEndingAfter(self, x2):
     b = bisect.bisect_left(self.lend, x2)
-    return set(map(lambda l: l.id, self.lines_by_end[b:]))
+    return set(self.end_ids[b:])
 
+  # Returns the number of lines that match the query.
   def ExecuteQuery(self, q):
-    a = self.GetLinesBetween(q.start, q.end)
-    b = self.GetLinesStartingBefore(q.pos)
-    c = self.GetLinesEndingAfter(q.pos)
-    return len(set.intersection(a, b, c))
+    filters = [
+      functools.partial(self.GetLinesBetween, q.start, q.end),
+      functools.partial(self.GetLinesStartingBefore, q.pos),
+      functools.partial(self.GetLinesEndingAfter, q.pos)
+    ]
+
+    matches = filters[0]()
+    for f in filters[1:]:
+      if len(matches) == 0:
+        return 0
+      else:
+        matches.intersection_update(f())
+
+    return len(matches)
 
 line_set = LineSet()
 N = input()
