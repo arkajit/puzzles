@@ -1,7 +1,10 @@
 import sys
 
+# Return the dimensions of the largest square of zeros in a
+# grid of zeroes and ones.
 def zerobox(grid):
   n = len(grid)-1
+  # T[i][j] = largest square of zeros with bottom right corner in (i,j)
   T = [[0 for i in range(n+1)] for i in range(n+1)]
   if grid[1][1] == 0:
     T[1][1] = 1
