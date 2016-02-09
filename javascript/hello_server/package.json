@@ -1,0 +1,11 @@
+{
+  "name": "hello_server",
+  "version": "0.0.1",
+  "description": "A hello-world Node server.",
+  "main": "hello_server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "arkajit",
+  "license": "ISC"
+}
