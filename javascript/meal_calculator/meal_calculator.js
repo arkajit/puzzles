@@ -29,6 +29,7 @@ Meal.prototype.addDish = function(diner, dish) {
   var dishes = this.dinerDishes[diner] || [];
   dishes.push(dish);
   this.dinerDishes[diner] = dishes;
+  return this;
 };
 
 var chicken = new Dish('chicken', 9.99);
@@ -38,13 +39,13 @@ var salad = new Dish('salad', 5.49);
 var soda = new Dish('soda', 1.49);
 var beer = new Dish('beer', 6.49);
 
-var m = new Meal('Dinner');
-m.addDish('Alex', chicken)
-m.addDish('Beth', salad)
-m.addDish('Alex', soda)
-m.addDish('Dave', soda)
-m.addDish('Dave', eggplant)
-m.addDish('Beth', soup)
-m.addDish('Beth', beer);
+var m = new Meal('Dinner')
+  .addDish('Alex', chicken)
+  .addDish('Beth', salad)
+  .addDish('Alex', soda)
+  .addDish('Dave', soda)
+  .addDish('Dave', eggplant)
+  .addDish('Beth', soup)
+  .addDish('Beth', beer);
 
 console.log(m.getBill(0.1, 0.2));
