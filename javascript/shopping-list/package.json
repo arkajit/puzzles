@@ -12,6 +12,7 @@
   "author": "Arkajit Dey",
   "license": "ISC",
   "dependencies": {
+    "lodash": "^4.3.0",
     "node-static": "^0.7.7"
   }
 }
