@@ -1,6 +1,6 @@
-var http   = require('http');
-var _      = require('lodash');
-var static = require('node-static');
+var http        = require('http');
+var _           = require('lodash');
+var CacheServer = require('./streams/cache-server');
 
 var Storage = function() {
   this.items = [];
@@ -51,7 +51,7 @@ storage.add('Broad beans');
 storage.add('Tomatoes');
 storage.add('Peppers');
 
-var fileServer = new static.Server('./public');
+var fileServer = new CacheServer('./public');
 
 var tryParse = function(req) {
   var item = '';
