@@ -1,0 +1,23 @@
+{
+  "name": "ringpop-example",
+  "version": "1.0.0",
+  "description": "An example ringpop cluster.",
+  "main": "helloring.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "ring": "node node_modules/ringpop-admin/ringpop-admin.js"
+  },
+  "keywords": [
+    "ringpop"
+  ],
+  "author": "Arkajit Dey",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.4",
+    "ringpop": "^10.14.0",
+    "tchannel": "^2.8.0"
+  },
+  "devDependencies": {
+    "ringpop-admin": "^0.12.1"
+  }
+}
